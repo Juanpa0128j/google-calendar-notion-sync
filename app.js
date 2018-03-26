@@ -1,19 +1,29 @@
-var http = require('http')
-var express = require('express')
-var RED = require('node-red')
-var keepalive = require('./util/glitchKeepalive')
+const http = require('http')
+const express = require('express')
+const RED = require('node-red')
+const keepalive = require('./util/glitchKeepalive')
 
 // Create an Express app
-var app = express()
-
-// Add a simple route for static content served from 'public'
-app.use('/', express.static('public'))
+const app = express()
 
 // Create a server
-var server = http.createServer(app)
+const server = http.createServer(app)
+
+const {
+  GITHUB_CLIENT_ID,
+} = 
+
+const adminAuth = require('node-red-auth-github')({
+    clientID: GITHUB_CLIENT_ID,
+    clientSecret: GITHUB_CLIENT_SECRET,
+    baseURL: "http://localhost:1880/",
+    users: [
+       { username: "knolleary",permissions: ["*"]}
+    ]
+})
 
 // Create the settings object - see default settings.js file for other options
-var settings = {
+const settings = {
   adminAuth: {
     type: 'credentials',
     users: [
@@ -38,14 +48,16 @@ var settings = {
 // Initialise the runtime with a server and settings
 RED.init(server, settings)
 
+// Add a simple route for static content served from 'public'
+app.use('/', express.static('public'))
+// Glitch keepalive
+app.get('/its-alive', (req, res) => res.json({ isAlive: true }))
+
 // Serve the editor UI from /red
 app.use(settings.httpAdminRoot, RED.httpAdmin)
 
 // Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot, RED.httpNode)
-
-// Glitch keepalive
-app.get('/its-alive', (req, res) => res.json({ isAlive: true }))
 
 server.listen(8080, keepalive)
 
