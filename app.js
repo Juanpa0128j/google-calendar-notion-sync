@@ -2,6 +2,7 @@ const http = require('http')
 const express = require('express')
 const RED = require('node-red')
 const keepalive = require('./util/glitchKeepalive')
+const githubAuth = require('node-red-auth-github')
 
 // Create an Express app
 const app = express()
@@ -18,16 +19,6 @@ const {
   PROJECT_DOMAIN,
 } = process.env
 
-const adminAuthOauth = require('node-red-auth-github')({
-  clientID: GITHUB_CLIENT_ID,
-  clientSecret: GITHUB_CLIENT_SECRET,
-  baseURL: 'https://' + PROJECT_DOMAIN + '.glitch.me/',
-  users: [{ username: ADMIN_USERNAME, permissions: ['*'] }],
-  default: {
-    permissions: 'read',
-  },
-})
-
 const adminAuthStatic = {
   type: 'credentials',
   users: [
@@ -41,7 +32,15 @@ const adminAuthStatic = {
 
 // Create the settings object - see default settings.js file for other options
 const settings = {
-  adminAuth: adminAuthOauth,
+  adminAuth: githubAuth({
+    clientID: GITHUB_CLIENT_ID,
+    clientSecret: GITHUB_CLIENT_SECRET,
+    baseURL: 'https://' + PROJECT_DOMAIN + '.glitch.me/',
+    users: [{ username: ADMIN_USERNAME, permissions: ['*'] }],
+    default: {
+      permissions: 'read',
+    },
+  }),
 
   // httpNodeCors: {
   //   origin: '*',
