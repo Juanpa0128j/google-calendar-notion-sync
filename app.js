@@ -1,10 +1,10 @@
-require('dotenv').config()
-
 const http = require('http')
 const express = require('express')
 const request = require('request')
 const RED = require('node-red')
 const githubAuth = require('node-red-auth-github')
+
+require('dotenv').config()
 
 // Create an Express app
 const app = express()
