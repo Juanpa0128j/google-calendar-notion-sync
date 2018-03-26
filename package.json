@@ -1,0 +1,21 @@
+{
+  "name": "red-glitch-is-red",
+  "version": "1.0.0",
+  "description": "Node red basic template in Glitch.com",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "node-red": "^0.18.4",
+    "dotenv": "^5.0.1"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": "9"
+  },
+  "author": "",
+  "license": "ISC"
+}
