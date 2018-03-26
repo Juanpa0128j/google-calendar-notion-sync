@@ -36,25 +36,25 @@ const settings = {
   httpAdminRoot: '/',
   httpNodeRoot: '/',
   uiPort: PORT,
-  functionGlobalContext: { nodeEnv: { ...process.env } }, // DANGER: enables env to be passed to node-red
+  // functionGlobalContext: { nodeEnv: { ...process.env } }, // DANGER: enables env to be passed to node-red
 }
 
 if (VIEW_WITHOUT_LOGIN && JSON.parse(VIEW_WITHOUT_LOGIN))
   settings.adminAuth.default = { permissions: 'read' }
 
 const keepalive = () => {
-  const reqOpts = {
-    url: 'http://' + process.env.PROJECT_DOMAIN + '.glitch.me/its-alive',
-  }
-  const keepalive = () =>
-    request(reqOpts, () => setTimeout(() => keepalive(), 55000))
-  if (process.env.PROJECT_DOMAIN) keepalive()
+  if (PROJECT_DOMAIN) request(
+    { url: `http://${PROJECT_DOMAIN}.glitch.me/glitch-alive` },
+    () => setTimeout(() => keepalive(), 55000)
+  )
 }
 
 RED.init(server, settings)
+RED.start()
+
 app.use('/', express.static('public'))
-app.get('/its-alive', (req, res) => res.json({ isAlive: true }))
+app.get('/glitch-alive', (req, res) => res.json({ isAlive: true }))
 app.use(settings.httpAdminRoot, RED.httpAdmin)
 app.use(settings.httpNodeRoot, RED.httpNode)
-RED.start()
+
 server.listen(PORT, KEEP_ALIVE && JSON.parse(KEEP_ALIVE) ? keepalive : () => true)
