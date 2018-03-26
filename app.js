@@ -22,7 +22,6 @@ const {
   VIEW_WITHOUT_LOGIN,
 } = process.env
 
-// Create the settings object - see default settings.js file for other options
 const settings = {
   adminAuth: githubAuth({
     clientID: GITHUB_CLIENT_ID,
@@ -49,21 +48,13 @@ const keepalive = () => {
   }
   const keepalive = () =>
     request(reqOpts, () => setTimeout(() => keepalive(), 55000))
-  // if this is running on Glitch, call self every 55 secs
   if (process.env.PROJECT_DOMAIN) keepalive()
 }
 
-// Initialise the runtime with a server and settings
 RED.init(server, settings)
-// Add a simple route for static content served from 'public'
 app.use('/', express.static('public'))
-// Glitch keepalive
 app.get('/its-alive', (req, res) => res.json({ isAlive: true }))
-// Serve the editor UI from /red
 app.use(settings.httpAdminRoot, RED.httpAdmin)
-// Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot, RED.httpNode)
-// Start the runtime
 RED.start()
-// start the server
 server.listen(PORT, KEEP_ALIVE && JSON.parse(KEEP_ALIVE) ? keepalive : () => true)
