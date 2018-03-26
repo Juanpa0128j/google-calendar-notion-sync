@@ -52,11 +52,7 @@ RED.init(server, settings)
 RED.start()
 
 app.use('/', express.static('public'))
-// app.get('/glitch-alive', (req, res) => res.json({ isAlive: true }))
-app.get('/glitch-alive', (req, res) => {
-  console.log('alive')
-  res.json({ isAlive: true })
-})
+app.get('/glitch-alive', (req, res) => res.json({ isAlive: true }))
 app.use(settings.httpAdminRoot, RED.httpAdmin)
 app.use(settings.httpNodeRoot, RED.httpNode)
 
