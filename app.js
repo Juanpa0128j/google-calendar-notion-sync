@@ -44,10 +44,9 @@ const settings = {
 if (VIEW_WITHOUT_LOGIN && JSON.parse(VIEW_WITHOUT_LOGIN))
   settings.adminAuth.default = { permissions: 'read' }
 
-const keepalive = () => PROJECT_DOMAIN && request(
-  { url: `${baseURL}glitch-alive` },
-  () => setTimeout(keepalive, 55000)
-)
+const keepalive = () =>
+  PROJECT_DOMAIN &&
+  request({ url: `${baseURL}glitch-alive` }, () => setTimeout(keepalive, 55000))
 
 RED.init(server, settings)
 RED.start()
@@ -61,4 +60,7 @@ app.get('/glitch-alive', (req, res) => {
 app.use(settings.httpAdminRoot, RED.httpAdmin)
 app.use(settings.httpNodeRoot, RED.httpNode)
 
-server.listen(PORT, KEEP_ALIVE && JSON.parse(KEEP_ALIVE) ? keepalive : () => void 0)
+server.listen(
+  PORT,
+  KEEP_ALIVE && JSON.parse(KEEP_ALIVE) ? keepalive : () => void 0,
+)
