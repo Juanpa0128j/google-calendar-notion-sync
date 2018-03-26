@@ -10,7 +10,8 @@
   "dependencies": {
     "express": "^4.16.3",
     "node-red": "^0.18.4",
-    "dotenv": "^5.0.1"
+    "dotenv": "^5.0.1",
+    "node-red-auth-github": "^0.1.0"
   },
   "devDependencies": {},
   "engines": {

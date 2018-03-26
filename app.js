@@ -25,14 +25,10 @@ var settings = {
     ],
   },
 
-  httpNodeCors: {
-    origin: '*',
-    methods: 'GET,PUT,POST,PATCH,DELETE',
-  },
-
-  // flowFile : "glitch_flows.json",
-  // userDir : "app/glitch/flows",
-  // nodesDir: "app/node-red/nodes",
+  // httpNodeCors: {
+  //   origin: '*',
+  //   methods: 'GET,PUT,POST,PATCH,DELETE',
+  // },
   httpAdminRoot: '/',
   httpNodeRoot: '/',
   uiPort: 8080,

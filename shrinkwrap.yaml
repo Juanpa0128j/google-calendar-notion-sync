@@ -2,6 +2,7 @@ dependencies:
   dotenv: 5.0.1
   express: 4.16.3
   node-red: 0.18.4
+  node-red-auth-github: 0.1.0
 packages:
   /abbrev/1.1.1:
     dev: false
@@ -1459,6 +1460,12 @@ packages:
     optional: true
     resolution:
       integrity: sha1-22BBEst04NR3VU6bUFsXq936t4Y=
+  /node-red-auth-github/0.1.0:
+    dependencies:
+      passport-github: 1.1.0
+    dev: false
+    resolution:
+      integrity: sha1-xGe3FRGpSJTCrAx2iE0RUJIXu00=
   /node-red-node-email/0.1.24:
     dependencies:
       imap: 0.8.19
@@ -1697,6 +1704,14 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha1-/CidTtiZMRlGDBViUyYs3I3mW/M=
+  /passport-github/1.1.0:
+    dependencies:
+      passport-oauth2: 1.4.0
+    dev: false
+    engines:
+      node: '>= 0.4.0'
+    resolution:
+      integrity: sha1-jOHj/NYa11eOsd9ZWDnkrqEjVdQ=
   /passport-http-bearer/1.0.1:
     dependencies:
       passport-strategy: 1.0.0
@@ -1713,6 +1728,17 @@ packages:
       node: '>= 0.4.0'
     resolution:
       integrity: sha1-TzeLZ4uS0W270jOmxwZSAJPlYbo=
+  /passport-oauth2/1.4.0:
+    dependencies:
+      oauth: 0.9.15
+      passport-strategy: 1.0.0
+      uid2: 0.0.3
+      utils-merge: 1.0.1
+    dev: false
+    engines:
+      node: '>= 0.4.0'
+    resolution:
+      integrity: sha1-9i+BWDy+EmCb585vFguTlaJ7hq0=
   /passport-strategy/1.0.0:
     dev: false
     engines:
@@ -2377,3 +2403,4 @@ specifiers:
   dotenv: ^5.0.1
   express: ^4.16.3
   node-red: ^0.18.4
+  node-red-auth-github: ^0.1.0
