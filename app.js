@@ -10,30 +10,38 @@ const app = express()
 const server = http.createServer(app)
 
 const {
+  PORT,
+  ADMIN_USERNAME,
+  ADMIN_PASSWORD_HASH,
   GITHUB_CLIENT_ID,
-} = 
+  GITHUB_CLIENT_SECRET,
+  PROJECT_DOMAIN,
+} = process.env
 
-const adminAuth = require('node-red-auth-github')({
-    clientID: GITHUB_CLIENT_ID,
-    clientSecret: GITHUB_CLIENT_SECRET,
-    baseURL: "http://localhost:1880/",
-    users: [
-       { username: "knolleary",permissions: ["*"]}
-    ]
+const adminAuthOauth = require('node-red-auth-github')({
+  clientID: GITHUB_CLIENT_ID,
+  clientSecret: GITHUB_CLIENT_SECRET,
+  baseURL: 'https://' + PROJECT_DOMAIN + '.glitch.me/',
+  users: [{ username: ADMIN_USERNAME, permissions: ['*'] }],
+  default: {
+    permissions: 'read',
+  },
 })
+
+const adminAuthStatic = {
+  type: 'credentials',
+  users: [
+    {
+      username: ADMIN_USERNAME,
+      password: ADMIN_PASSWORD_HASH,
+      permissions: '*',
+    },
+  ],
+}
 
 // Create the settings object - see default settings.js file for other options
 const settings = {
-  adminAuth: {
-    type: 'credentials',
-    users: [
-      {
-        username: process.env.USERNAME,
-        password: process.env.SECRET,
-        permissions: '*',
-      },
-    ],
-  },
+  adminAuth: adminAuthOauth,
 
   // httpNodeCors: {
   //   origin: '*',
@@ -41,7 +49,7 @@ const settings = {
   // },
   httpAdminRoot: '/',
   httpNodeRoot: '/',
-  uiPort: 8080,
+  uiPort: PORT,
   functionGlobalContext: {}, // enables global context
 }
 
@@ -59,7 +67,7 @@ app.use(settings.httpAdminRoot, RED.httpAdmin)
 // Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot, RED.httpNode)
 
-server.listen(8080, keepalive)
+server.listen(PORT, keepalive)
 
 // Start the runtime
 RED.start()
