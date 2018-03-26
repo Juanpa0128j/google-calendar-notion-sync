@@ -1,8 +1,11 @@
+require('dotenv').config()
+
 const http = require('http')
 const express = require('express')
 const RED = require('node-red')
-const keepalive = require('./util/glitchKeepalive')
 const githubAuth = require('node-red-auth-github')
+
+const keepalive = require('./keepalive')
 
 // Create an Express app
 const app = express()
@@ -17,6 +20,7 @@ const {
   GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET,
   PROJECT_DOMAIN,
+  KEEP_ALIVE,
 } = process.env
 
 const adminAuthStatic = {
@@ -66,7 +70,7 @@ app.use(settings.httpAdminRoot, RED.httpAdmin)
 // Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot, RED.httpNode)
 
-server.listen(PORT, keepalive)
+server.listen(PORT, KEEP_ALIVE ? keepalive : () => true )
 
 // Start the runtime
 RED.start()
