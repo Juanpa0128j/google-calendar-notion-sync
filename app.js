@@ -30,15 +30,14 @@ const settings = {
     baseURL: 'https://' + PROJECT_DOMAIN + '.glitch.me/',
     users: [{ username: GITHUB_USERNAME, permissions: ['*'] }],
   }),
-
-  // httpNodeCors: {
-  //   origin: '*',
-  //   methods: 'GET,PUT,POST,PATCH,DELETE',
-  // },
+  httpNodeCors: {
+    origin: '*',
+    methods: 'GET,PUT,POST,PATCH,DELETE',
+  },
   httpAdminRoot: '/',
   httpNodeRoot: '/',
   uiPort: PORT,
-  functionGlobalContext: { ...process.env }, // enables global context
+  functionGlobalContext: { nodeEnv: { ...process.env } }, // DANGER: enables env to be passed to node-red
 }
 
 if (VIEW_WITHOUT_LOGIN && JSON.parse(VIEW_WITHOUT_LOGIN))
