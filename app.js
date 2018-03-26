@@ -1,6 +1,7 @@
 var http = require('http');
 var express = require("express");
 var RED = require("node-red");
+var keepalive = require('./util/glitchKeepalive');
 
 // Create an Express app
 var app = express();
@@ -11,6 +12,8 @@ app.use("/",express.static("public"));
 // Create a server
 var server = http.createServer(app);
 
+console.log(process.env.SECRET,)
+
 // Create the settings object - see default settings.js file for other options
 var settings = {
   
@@ -20,24 +23,23 @@ var settings = {
     type: "credentials",
     users: [{
         username: "bbaaxx",
-        password: "$2a$08$n9/LralrtBcrApREv9iX9O8TLRHb9UDPHqRLvkDLAS4xuEBhedV1G",
-        // password: process.env.SECRET,
+        password: process.env.SECRET,
         permissions: "*"
       }]
   },
   
   httpNodeCors: {
-       origin: "*",
-        methods: "GET,PUT,POST,DELETE"
-     },
-  
-    // flowFile : "glitch_flows.json",
-    // userDir : "app/glitch/flows",
-	  nodesDir: "app/node-red/nodes",
-    httpAdminRoot:"/",
-    httpNodeRoot: "/glitch",
-    uiPort: 8080,
-    functionGlobalContext: { }    // enables global context
+     origin: "*",
+    methods: "GET,PUT,POST,PATCH,DELETE"
+   },
+
+  // flowFile : "glitch_flows.json",
+  // userDir : "app/glitch/flows",
+  // nodesDir: "app/node-red/nodes",
+  httpAdminRoot:"/",
+  httpNodeRoot: "/glitch",
+  uiPort: 8080,
+  functionGlobalContext: { }    // enables global context
 };
 
 // Initialise the runtime with a server and settings
@@ -48,6 +50,9 @@ app.use(settings.httpAdminRoot,RED.httpAdmin);
 
 // Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot,RED.httpNode);
+
+// glitch keepalive
+app.get('/its-alive', (req, res) => res.json({ isAlive: true }))
 
 server.listen(8080);
 

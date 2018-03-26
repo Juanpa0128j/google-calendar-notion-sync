@@ -1,0 +1,18 @@
+dependencies:
+  node-red-contrib-apiai: 1.1.2
+packages:
+  /apiai/4.0.3:
+    dev: false
+    resolution:
+      integrity: sha1-LRqjutH9lBjeqtpQk2noTgEe+vg=
+  /node-red-contrib-apiai/1.1.2:
+    dependencies:
+      apiai: 4.0.3
+    dev: false
+    resolution:
+      integrity: sha512-64bmYsuQKmWuRX429Lva0swo0rlRQZt1X7pTukxnT8PERNNvXWopwd5vfoNwzhZqE1dB1HVTEujpUCBhYWWVpw==
+registry: 'https://registry.npmjs.org/'
+shrinkwrapMinorVersion: 4
+shrinkwrapVersion: 3
+specifiers:
+  node-red-contrib-apiai: ~1.1.2

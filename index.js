@@ -1,1 +1,3 @@
-console.log('hi');
+require('dotenv').config()
+// require('babel-register')
+require('./app')
