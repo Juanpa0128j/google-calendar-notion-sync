@@ -19,6 +19,7 @@ const {
   GITHUB_CLIENT_SECRET,
   PROJECT_DOMAIN,
   KEEP_ALIVE,
+  VIEW_WITHOUT_LOGIN,
 } = process.env
 
 // Create the settings object - see default settings.js file for other options
@@ -28,9 +29,6 @@ const settings = {
     clientSecret: GITHUB_CLIENT_SECRET,
     baseURL: 'https://' + PROJECT_DOMAIN + '.glitch.me/',
     users: [{ username: GITHUB_USERNAME, permissions: ['*'] }],
-    default: {
-      permissions: 'read',
-    },
   }),
 
   // httpNodeCors: {
@@ -42,6 +40,8 @@ const settings = {
   uiPort: PORT,
   functionGlobalContext: {}, // enables global context
 }
+
+if (JSON.parse(VIEW_WITHOUT_LOGIN)) settings.adminAuth.default = { permissions: 'read' }
 
 const keepalive = () => {
   const reqOpts = {
