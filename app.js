@@ -38,10 +38,11 @@ const settings = {
   httpAdminRoot: '/',
   httpNodeRoot: '/',
   uiPort: PORT,
-  functionGlobalContext: {}, // enables global context
+  functionGlobalContext: { ...process.env }, // enables global context
 }
 
-if (JSON.parse(VIEW_WITHOUT_LOGIN)) settings.adminAuth.default = { permissions: 'read' }
+if (VIEW_WITHOUT_LOGIN && JSON.parse(VIEW_WITHOUT_LOGIN))
+  settings.adminAuth.default = { permissions: 'read' }
 
 const keepalive = () => {
   const reqOpts = {
@@ -66,4 +67,4 @@ app.use(settings.httpNodeRoot, RED.httpNode)
 // Start the runtime
 RED.start()
 // start the server
-server.listen(PORT, KEEP_ALIVE ? keepalive : () => true)
+server.listen(PORT, KEEP_ALIVE && JSON.parse(KEEP_ALIVE) ? keepalive : () => true)
