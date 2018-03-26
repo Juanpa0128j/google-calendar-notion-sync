@@ -1,6 +1,6 @@
-import request from 'request'
+const request = require('request')
 
-export default () => {
+module.exports = () => {
   const reqOpts = {
     url: 'http://' + process.env.PROJECT_DOMAIN + '.glitch.me/its-alive',
   }
