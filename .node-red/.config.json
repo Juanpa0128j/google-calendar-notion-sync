@@ -442,25 +442,6 @@
      "file": "/rbd/pnpm-volume/4bf7fecf-78ba-4425-b1c6-fbb14687c7b0/node_modules/node-red-node-twitter/27-twitter.js"
     }
    }
-  },
-  "node-red-contrib-apiai": {
-   "name": "node-red-contrib-apiai",
-   "version": "1.1.2",
-   "local": true,
-   "nodes": {
-    "apiai": {
-     "name": "apiai",
-     "types": [
-      "apiai-agent",
-      "apiai-text",
-      "apiai-event"
-     ],
-     "enabled": true,
-     "local": true,
-     "module": "node-red-contrib-apiai",
-     "file": "/app/.node-red/node_modules/node-red-contrib-apiai/lib/apiai.js"
-    }
-   }
   }
  },
  "_credentialSecret": "3d499990f460e869c840c40be76b2a1ba18303546c78778cf837e779d58f4282",
