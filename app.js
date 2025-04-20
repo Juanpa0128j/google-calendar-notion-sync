@@ -21,7 +21,7 @@ async function syncEvents() {
       timeMin: new Date().toISOString(),
       singleEvents: true,
       orderBy: 'startTime',
-      maxResults: 50,
+      maxResults: 10,
       showDeleted: true
     });
 
@@ -92,7 +92,7 @@ async function syncEvents() {
   }
 }
 
-cron.schedule('*/10 * * * * *', () => {
+cron.schedule('0 */10 * * * *', () => {
   console.log('--- Sync Triggered ---');
   syncEvents();
 });
