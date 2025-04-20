@@ -96,3 +96,5 @@ cron.schedule('0 */10 * * * *', () => {
   console.log('--- Sync Triggered ---');
   syncEvents();
 });
+
+module.exports = { syncEvents };

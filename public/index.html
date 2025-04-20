@@ -28,6 +28,33 @@
   <div class="status">
     <strong>Status:</strong> Application is running and ready to sync events.
   </div>
+
+  <button onclick="triggerSync()">Start Sync</button>
+
+  <script>
+    const statusDiv = document.querySelector('.status');
+
+    // WebSocket connection
+    const ws = new WebSocket('ws://localhost:3000');
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      statusDiv.innerHTML = `<strong>Status:</strong> ${data.status}`;
+    };
+
+    async function triggerSync() {
+      try {
+        const response = await fetch('/sync', { method: 'POST' });
+        if (response.ok) {
+          alert('Sync process started successfully!');
+        } else {
+          alert('Failed to start sync process.');
+        }
+      } catch (error) {
+        alert('Error starting sync process.');
+      }
+    }
+  </script>
 </body>
 </html>
 
