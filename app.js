@@ -1,70 +1,103 @@
 const { google } = require('googleapis');
+const { Client } = require('@notionhq/client');
+const cron = require('node-cron');
+
+// Google API setup
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET
 );
 oauth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
-
 const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
-const { Client } = require('@notionhq/client');
+// Notion client setup
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
 async function syncEvents() {
-  // 1. Fetch upcoming events
-  const { data } = await calendar.events.list({
-    calendarId: 'primary',
-    timeMin: (new Date()).toISOString(),
-    singleEvents: true,
-    orderBy: 'startTime'
-  });
-  const events = data.items;
-
-  for (const event of events) {
-    // 2. Check if event already exists in Notion
-    const query = await notion.databases.query({
-      database_id: process.env.NOTION_DATABASE_ID,
-      filter: {
-        property: 'EventID',
-        text: { equals: event.id }
-      }
+  try {
+    console.log('Fetching Google Calendar events...');
+    const { data } = await calendar.events.list({
+      calendarId: 'primary',
+      timeMin: new Date().toISOString(),
+      singleEvents: true,
+      orderBy: 'startTime',
+      maxResults: 10
     });
 
-    if (event.status === 'cancelled') {
-      // 3a. Delete or flag the page
-      if (query.results.length) {
+    const events = data.items;
+    console.log(`Found ${events.length} events.`);
+
+    for (const event of events) {
+      console.log(`Processing event: ${event.summary} (${event.id})`);
+
+      // Check if the event exists in Notion
+      const query = await notion.databases.query({
+        database_id: process.env.NOTION_DATABASE_ID,
+        filter: {
+          property: 'Event ID',
+          rich_text: {
+            equals: event.id
+          }
+        }
+      });
+
+      const exists = query.results.length > 0;
+
+      if (event.status === 'cancelled') {
+        console.log(`Event ${event.id} is cancelled.`);
+
+        if (exists) {
+          console.log(`Flagging event ${event.id} as cancelled in Notion.`);
+          await notion.pages.update({
+            page_id: query.results[0].id,
+            properties: {
+              Status: { select: { name: 'Cancelled' } }
+            }
+          });
+        } else {
+          console.log(`Cancelled event ${event.id} not found in Notion.`);
+        }
+
+      } else if (exists) {
+        console.log(`Updating existing event ${event.id} in Notion.`);
         await notion.pages.update({
           page_id: query.results[0].id,
-          properties: { Status: { select: { name: 'Cancelled' } } }
+          properties: {
+            Name: { title: [{ text: { content: event.summary || 'No Title' } }] },
+            Date: {
+              date: {
+                start: event.start?.dateTime || event.start?.date,
+                end: event.end?.dateTime || event.end?.date
+              }
+            }
+          }
+        });
+      } else {
+        console.log(`Creating new page for event ${event.id} in Notion.`);
+        await notion.pages.create({
+          parent: { database_id: process.env.NOTION_DATABASE_ID },
+          properties: {
+            Name: { title: [{ text: { content: event.summary || 'No Title' } }] },
+            EventID: { rich_text: [{ text: { content: event.id } }] },
+            Date: {
+              date: {
+                start: event.start?.dateTime || event.start?.date,
+                end: event.end?.dateTime || event.end?.date
+              }
+            }
+          }
         });
       }
-    } else if (query.results.length) {
-      // 3b. Update existing page
-      await notion.pages.update({
-        page_id: query.results[0].id,
-        properties: {
-          Name: { title: [{ text: { content: event.summary } }] },
-          Date: { date: { start: event.start.dateTime, end: event.end.dateTime } }
-        }
-      });
-    } else {
-      // 3c. Create new page
-      await notion.pages.create({
-        parent: { database_id: process.env.NOTION_DATABASE_ID },
-        properties: {
-          Name: { title: [{ text: { content: event.summary } }] },
-          EventID: { rich_text: [{ text: { content: event.id } }] },
-          Date: { date: { start: event.start.dateTime, end: event.end.dateTime } }
-        }
-      });
     }
+    console.log('Sync completed.');
+  } catch (error) {
+    console.error('Sync failed:', error.message);
+    console.error(error);
   }
 }
 
-const cron = require('node-cron');
-
-cron.schedule('*/1 * * * *', () => {
-  console.log('Syncing events at', new Date().toISOString());
-  syncEvents().catch(console.error);
+// Run every 15 seconds (for debugging)
+cron.schedule('*/15 * * * * *', () => {
+  console.log('--- Sync Triggered ---');
+  syncEvents();
 });
-
