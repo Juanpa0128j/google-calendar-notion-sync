@@ -1,0 +1,28 @@
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Glitch-specific files
+.glitchdotcom.json
+.glitch-assets
+
+# Backup files
+*.backup
+
+# System files
+*.DS_Store
+*.bash_history
+.config/
+.ssh/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Other
+shrinkwrap.yaml
