@@ -96,14 +96,7 @@ async function syncEvents() {
   }
 }
 
-const express = require('express');
-const app = express();
-app.get('/', (req, res) => res.send('OK'));
-app.listen(process.env.PORT || 3000);
-
-
-// Run every 10 seconds (for debugging)
-cron.schedule('*/10 * * * * *', () => {
+cron.schedule('* */10 * * * *', () => {
   console.log('--- Sync Triggered ---');
   syncEvents();
 });
