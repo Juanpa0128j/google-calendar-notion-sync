@@ -1,5 +1,5 @@
 {
-  "name": "red-glitch-is-red",
+  "name": "automation google calendar notion",
   "version": "1.0.0",
   "description": "Node red basic template in Glitch.com",
   "main": "index.js",
@@ -8,14 +8,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "googleapis": "^39.2.0",
-    "@notionhq/client": "^2.0.0",
-    "node-cron": "^3.0.0"
+    "googleapis": "^148.0.0",
+    "@notionhq/client": "^2.3.0",
+    "node-cron": "^3.0.3"
   },
   "devDependencies": {},
   "engines": {
-    "node": "9"
-  },
-  "author": "",
-  "license": "ISC"
+    "node": ">=16.x"
+  }
 }
