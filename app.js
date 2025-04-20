@@ -34,7 +34,7 @@ async function syncEvents() {
       const query = await notion.databases.query({
         database_id: process.env.NOTION_DATABASE_ID,
         filter: {
-          property: 'Event ID',
+          property: 'EventID',
           rich_text: {
             equals: event.id
           }
@@ -63,7 +63,7 @@ async function syncEvents() {
         await notion.pages.update({
           page_id: query.results[0].id,
           properties: {
-            Name: { title: [{ text: { content: event.summary || 'No Title' } }] },
+            Title: { title: [{ text: { content: event.summary || 'No Title' } }] },
             Date: {
               date: {
                 start: event.start?.dateTime || event.start?.date,
@@ -77,7 +77,7 @@ async function syncEvents() {
         await notion.pages.create({
           parent: { database_id: process.env.NOTION_DATABASE_ID },
           properties: {
-            Name: { title: [{ text: { content: event.summary || 'No Title' } }] },
+            Title: { title: [{ text: { content: event.summary || 'No Title' } }] },
             EventID: { rich_text: [{ text: { content: event.id } }] },
             Date: {
               date: {
@@ -96,8 +96,8 @@ async function syncEvents() {
   }
 }
 
-// Run every 15 seconds (for debugging)
-cron.schedule('*/15 * * * * *', () => {
+// Run every 10 seconds (for debugging)
+cron.schedule('*/10 * * * * *', () => {
   console.log('--- Sync Triggered ---');
   syncEvents();
 });
