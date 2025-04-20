@@ -21,7 +21,8 @@ async function syncEvents() {
       timeMin: new Date().toISOString(),
       singleEvents: true,
       orderBy: 'startTime',
-      maxResults: 10
+      maxResults: 50,
+      showDeleted: true
     });
 
     const events = data.items;
@@ -43,20 +44,15 @@ async function syncEvents() {
 
       const exists = query.results.length > 0;
 
-      if (event.status === 'cancelled') {
-        console.log(`Event ${event.id} is cancelled.`);
+      if (event.status === 'cancelled' && exists) {
+        console.log(`event ${event.id} was cancelled.`);
 
-        if (exists) {
-          console.log(`Flagging event ${event.id} as cancelled in Notion.`);
-          await notion.pages.update({
+        await notion.pages.update({
             page_id: query.results[0].id,
-            properties: {
-              Status: { select: { name: 'Cancelled' } }
-            }
-          });
-        } else {
-          console.log(`Cancelled event ${event.id} not found in Notion.`);
-        }
+            archived: true  // moves the page to trash
+        });
+        
+        console.log(`event ${event.id} was moved to trash in Notion.`);
 
       } else if (exists) {
         console.log(`Updating existing event ${event.id} in Notion.`);
@@ -96,7 +92,7 @@ async function syncEvents() {
   }
 }
 
-cron.schedule('* */10 * * * *', () => {
+cron.schedule('*/10 * * * * *', () => {
   console.log('--- Sync Triggered ---');
   syncEvents();
 });
