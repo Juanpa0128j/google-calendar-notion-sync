@@ -15,6 +15,7 @@ const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
 async function syncEvents() {
   try {
+    console.log('Starting sync process...');
     console.log('Fetching Google Calendar events...');
     const { data } = await calendar.events.list({
       calendarId: 'primary',
@@ -45,14 +46,14 @@ async function syncEvents() {
       const exists = query.results.length > 0;
 
       if (event.status === 'cancelled' && exists) {
-        console.log(`event ${event.id} was cancelled.`);
+        console.log(`Event ${event.id} was cancelled.`);
 
         await notion.pages.update({
             page_id: query.results[0].id,
             archived: true  // moves the page to trash
         });
         
-        console.log(`event ${event.id} was moved to trash in Notion.`);
+        console.log(`Event ${event.id} was moved to trash in Notion.`);
 
       } else if (exists) {
         console.log(`Updating existing event ${event.id} in Notion.`);
@@ -96,3 +97,5 @@ cron.schedule('0 */10 * * * *', () => {
   console.log('--- Sync Triggered ---');
   syncEvents();
 });
+
+module.exports = { syncEvents };

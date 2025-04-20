@@ -10,6 +10,11 @@ This Node.js application synchronizes events from your Google Calendar to a Noti
 - Archives Notion pages when events are canceled in Google Calendar.
 - Runs automatically every 10 minutes using a cron job.
 
+## New Features
+
+- **Manual Sync Trigger**: Added a button in the frontend to manually trigger the sync process.
+- **Dynamic Status Updates**: The frontend dynamically updates the sync status using WebSocket.
+
 ## Prerequisites
 
 - Node.js installed on your machine.
@@ -47,17 +52,19 @@ This Node.js application synchronizes events from your Google Calendar to a Noti
    ```
 
 
-## Usage
+## Updated Usage
 
-To start the synchronization process, run:
-
+To start the application with both the backend and frontend, run:
 
 ```bash
-node app.js
+npm start
 ```
 
+This will start the server and serve the frontend at the specified port. The WebSocket connection will provide real-time updates on the sync status.
 
-The application will log synchronization activities to the console every 10 minutes.
+## Debugging
+
+Debugging messages have been added to the browser console, `app.js`, and `index.js` to help trace the sync process and WebSocket events.
 
 ## License
 
